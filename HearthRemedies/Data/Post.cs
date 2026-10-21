@@ -1,10 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Owin;
-using Owin;
+
 using System;
 using System.Threading.Tasks;
 
-[assembly: OwinStartup(typeof(HearthRemedies.Models.Post))]
+
 
 namespace HearthRemedies.Data
 {

@@ -28,6 +28,7 @@ namespace HearthRemedies
             builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
+            var app = builder.Build();
             // Create the database on startup
             using (var scope = app.Services.CreateScope())
             {
@@ -36,7 +37,7 @@ namespace HearthRemedies
                 using var db = factory.CreateDbContext();
                 db.Database.EnsureCreated();
             }
-            return builder.Build();
+            return app;
         }
     }
 }

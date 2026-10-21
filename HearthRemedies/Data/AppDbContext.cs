@@ -10,6 +10,6 @@ namespace HearthRemedies.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<RemedyPost> Posts => Set<RemedyPost>();
+        public DbSet<Post> Posts => Set<Post>();
     }
 }
