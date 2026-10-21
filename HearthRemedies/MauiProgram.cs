@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HearthRemedies.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HearthRemedies
 {
@@ -16,11 +18,24 @@ namespace HearthRemedies
 
             builder.Services.AddMauiBlazorWebView();
 
+
+            // Database file stored in the app's private data folder
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "hearth.db");
+            builder.Services.AddDbContextFactory<AppDbContext>(options =>
+                options.UseSqlite($"Filename={dbPath}"));
+
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
-
+            // Create the database on startup
+            using (var scope = app.Services.CreateScope())
+            {
+                var factory = scope.ServiceProvider
+                    .GetRequiredService<IDbContextFactory<AppDbContext>>();
+                using var db = factory.CreateDbContext();
+                db.Database.EnsureCreated();
+            }
             return builder.Build();
         }
     }
