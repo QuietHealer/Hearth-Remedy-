@@ -6,7 +6,8 @@ namespace HearthRemedies.Model
 {
     public class Posts
     {
-
+        private int nextId = 0;
+        public int Id { get; set; }
         public required string Name { get; set; }
         public string Description { get; set; } = "";
         public required List<string> Ingredients { get; set; }
@@ -18,8 +19,12 @@ namespace HearthRemedies.Model
         public DateTime CreatedAt { get; set; }
         public bool IsHidden { get; set; } = false;
         public int ReportCount { get; set; } = 0;
-        public string? IngUrl { get; set; }
+        public string? ImgUrl { get; set; }
 
+        public Posts()
+        {
+            Id = ++nextId;
+        }
 
     }
 }
