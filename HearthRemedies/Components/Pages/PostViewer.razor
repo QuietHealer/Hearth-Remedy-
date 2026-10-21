@@ -1,6 +1,34 @@
 ﻿@page "/posts"
+@using HearthRemedies.Data
+@inject IDbContextFactory<AppDbContext> DbFactory
+
+
 <h3>PostViewer</h3>
 
-@code {
+@foreach (var post in posts)
+{
+    <p>@post.Title (@post.Score)</p>
+}
 
+@code {
+    private List<Post> posts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        posts = await db.Posts
+            .Where(p => !p.IsHidden)
+            .OrderByDescending(p => p.Score)
+            .ToListAsync();
+    }
+
+    private async Task Upvote(Post post)
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+        var dbPost = await db.Posts.FindAsync(post.Id);
+        if (dbPost is null) return;
+        dbPost.Score++;
+        await db.SaveChangesAsync();
+        post.Score = dbPost.Score;
+    }
 }

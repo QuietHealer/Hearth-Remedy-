@@ -23,7 +23,7 @@ namespace HearthRemedies
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "hearth.db");
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
                 options.UseSqlite($"Filename={dbPath}"));
-
+            System.Diagnostics.Debug.WriteLine($"DB PATH: {dbPath}");
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
