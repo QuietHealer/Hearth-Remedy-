@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HearthRemedies.Components.Model
+namespace HearthRemedies.Model
 {
     public class Posts
     {
