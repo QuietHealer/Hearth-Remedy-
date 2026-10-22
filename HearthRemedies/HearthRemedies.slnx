@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="HearthRemedies.csproj" />
+  <Project Path="HearthRemedies.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>

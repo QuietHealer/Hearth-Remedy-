@@ -1,0 +1,118 @@
+.post-card {
+    background: #fffaf3;
+    border: 2px solid #3b2a1e;
+    border-radius: 12px;
+    padding: 0.75rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Two boxes side by side: description (wide) + ingredients (narrow) */
+.post-body {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 0.6rem;
+}
+
+.post-main,
+.post-ingredients {
+    border: 1.5px solid #3b2a1e;
+    border-radius: 8px;
+    padding: 0.6rem;
+    background: #fff;
+    min-width: 0;
+}
+
+.post-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 0.4rem;
+}
+
+.post-title {
+    font-size: 1rem;
+    margin: 0 0 0.2rem;
+    overflow-wrap: anywhere;
+}
+
+.post-category {
+    display: inline-block;
+    font-size: 0.7rem;
+    background: #f1dfc6;
+    color: #6b3f1d;
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    margin-bottom: 0.35rem;
+}
+
+.post-description {
+    font-size: 0.85rem;
+    margin: 0;
+    color: #444;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.post-ingredients {
+    background: #faf3e8;
+}
+
+    .post-ingredients h4 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 0 0 0.3rem;
+        color: #6b3f1d;
+    }
+
+    .post-ingredients ul {
+        margin: 0;
+        padding-left: 1rem;
+        font-size: 0.8rem;
+    }
+
+    .post-ingredients li {
+        overflow-wrap: anywhere;
+    }
+
+.more {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.post-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+.vote {
+    border: 1.5px solid #3b2a1e;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+    .vote.up.active {
+        background: #2e7d32;
+        border-color: #2e7d32;
+        color: #fff;
+    }
+
+    .vote.down.active {
+        background: #c62828;
+        border-color: #c62828;
+        color: #fff;
+    }
+
+.post-date {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #888;
+}
