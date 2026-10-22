@@ -28,6 +28,7 @@ namespace HearthRemedies.Model
             Ingredients = ingerdints;
             Steps = steps;
             Category = category;
+            CreatedAt = DateTime.Now;
         }
 
     }
