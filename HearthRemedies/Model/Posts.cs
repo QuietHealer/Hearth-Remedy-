@@ -21,15 +21,13 @@ namespace HearthRemedies.Model
         public int ReportCount { get; set; } = 0;
         public string? ImgUrl { get; set; }
 
-        public Posts(string name, List<string> ingerdints, List<string> steps, string category)
+        public Posts()
         {
             Id = ++nextId;
-            Name = name;
-            Ingredients = ingerdints;
-            Steps = steps;
-            Category = category;
             CreatedAt = DateTime.Now;
         }
+
+        //public void addIngredient()
 
     }
 }
