@@ -21,9 +21,13 @@ namespace HearthRemedies.Model
         public int ReportCount { get; set; } = 0;
         public string? ImgUrl { get; set; }
 
-        public Posts()
+        public Posts(string name, List<string> ingerdints, List<string> steps, string category)
         {
             Id = ++nextId;
+            Name = name;
+            Ingredients = ingerdints;
+            Steps = steps;
+            Category = category;
         }
 
     }
