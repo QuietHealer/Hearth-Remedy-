@@ -13,7 +13,7 @@ namespace HearthRemedies.Model
         public required List<string> Ingredients { get; set; }
         public required List<string> Steps {  get; set; }
         public required RemedyType Category { get; set; }
-        public RemedyMethod UsageMethod { get; set; }
+        public required RemedyMethod UsageMethod { get; set; }
         public int UpVoteNum { get; set; } = 0;
         public int DownVoteNum { get; set; } = 0;
         public DateTime CreatedAt { get; private set; }
