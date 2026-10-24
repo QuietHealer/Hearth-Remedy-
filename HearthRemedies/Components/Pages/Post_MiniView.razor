@@ -1,0 +1,77 @@
+﻿@using HearthRemedies.Model
+
+<article class="post-card">
+    <div class="post-body">
+        <section class="post-main">
+            @if (!string.IsNullOrWhiteSpace(Post.ImgUrl))
+            {
+                <img class="post-image" src="@Post.ImgUrl" alt="@Post.Name" />
+            }
+            <h3 class="post-title">@Post.Name</h3>
+            <span class="post-category">@Post.Category</span>
+            @if (!string.IsNullOrWhiteSpace(Post.Description))
+            {
+                <p class="post-description">@Post.Description</p>
+            }
+        </section>
+
+        <aside class="post-ingredients">
+            <h4>Ingredients</h4>
+            <ul>
+                @foreach (var ingredient in Post.Ingredients.Take(MaxIngredients))
+                {
+                    <li>@ingredient</li>
+                }
+            </ul>
+            @if (Post.Ingredients.Count > MaxIngredients)
+            {
+                <span class="more">+@(Post.Ingredients.Count - MaxIngredients) more</span>
+            }
+        </aside>
+    </div>
+
+    <footer class="post-footer">
+        <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
+            ▲ @FormatCount(Post.UpVoteNum)
+        </button>
+        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
+            ▼ @FormatCount(Post.DownVoteNum)
+        </button>
+        <time class="post-date">@Post.CreatedAt.ToString("MMM d")</time>
+    </footer>
+</article>
+
+@code {
+    [Parameter, EditorRequired] public Posts Post { get; set; } = default!;
+
+    // Raised after a vote changes so the parent can save it / re-sort.
+    [Parameter] public EventCallback<Posts> OnVoted { get; set; }
+
+    private const int MaxIngredients = 4;
+
+    // 1 = upvoted, -1 = downvoted, 0 = no vote
+    private int myVote;
+
+    private async Task Vote(int direction)
+    {
+        // Undo the current vote first
+        if (myVote == 1) Post.UpVoteNum--;
+        else if (myVote == -1) Post.DownVoteNum--;
+
+        // Clicking the same arrow again removes the vote
+        myVote = myVote == direction ? 0 : direction;
+
+        if (myVote == 1) Post.UpVoteNum++;
+        else if (myVote == -1) Post.DownVoteNum++;
+
+        await OnVoted.InvokeAsync(Post);
+    }
+
+    // 1300 -> "1.3k", 2500000 -> "2.5m"
+    private static string FormatCount(int n) => n switch
+    {
+        >= 1_000_000 => $"{n / 1_000_000d:0.#}m",
+        >= 1_000 => $"{n / 1_000d:0.#}k",
+        _ => n.ToString()
+    };
+}

@@ -1,8 +1,28 @@
-﻿@page "/"
+﻿@using HearthRemedies.Model
+@page "/"
 
 <h1>Results</h1>
+@foreach (var result in results)
+{
+    <Post_MiniView Post="result"/>
+}
 
 @code
 {
-    List<string> results = new List<string>();
+    private List<Posts> results = new List<Posts>();
+
+    private static List<string> ingredients = new List<string> { "Honey", "Water" };
+    private static List<string> steps = new List<string> { "Mix honey and water together.", "Stir until well combined.", "Serve chilled or over ice." };
+
+    protected override void OnInitialized()
+    {
+        results.Add(new Posts
+        {
+            Name = "Honey Water",
+            Description = "A refreshing drink made with honey and water.",
+            Ingredients = ingredients,
+            Steps = steps,
+            Category = "Beverages"
+        });
+    }
 }
