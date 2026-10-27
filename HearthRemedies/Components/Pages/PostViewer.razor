@@ -1,4 +1,40 @@
 ﻿@page "/posts"
+@using RemedyLib.Data
+@inject RemedyService Remedies
+
+@if (error is not null)
+{
+    <p role="alert">@error</p>
+}
+@foreach (var p in posts)
+{
+    <div>
+        <h3>@p.Title</h3>
+        <button aria-label="Upvote" @onclick="() => Vote(p, 1)">▲</button>
+        <span>@p.Score</span>
+        <button aria-label="Downvote" @onclick="() => Vote(p, -1)">▼</button>
+    </div>
+}
+
+@code {
+    List<PostSummary> posts = new();
+    string? error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try { posts = await Remedies.GetFeedAsync(new FeedQuery()); }
+        catch { error = "Couldn't load remedies. Check your connection."; }
+    }
+
+    async Task Vote(PostSummary p, int dir)
+    {
+        var result = await Remedies.VoteAsync(p.Id, dir);
+        if (result.Ok) { p.Score = result.Value!.Score; p.MyVote = result.Value.MyVote; }
+        else error = result.Error;
+    }
+}
+
+@*
 @using HearthRemedies.Data
 @inject IDbContextFactory<AppDbContext> DbFactory
 
@@ -32,3 +68,4 @@
         post.Score = dbPost.Score;
     }
 }
+*@

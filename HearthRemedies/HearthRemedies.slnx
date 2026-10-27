@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="../RemedyLib/RemedyLib.csproj" Id="e7566aa8-e1bf-4199-8a2f-9f0fa863a0dc" />
   <Project Path="HearthRemedies.csproj">
     <Deploy Solution="Debug|*" />
   </Project>

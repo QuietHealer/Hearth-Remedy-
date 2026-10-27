@@ -1,7 +1,8 @@
-﻿using HearthRemedies.Data;
+﻿using RemedyLib.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
+using RemedyLib;
 namespace HearthRemedies
 {
     public static class MauiProgram
@@ -19,11 +20,19 @@ namespace HearthRemedies
             builder.Services.AddMauiBlazorWebView();
 
 
+
             // Database file stored in the app's private data folder
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "hearth.db");
-            builder.Services.AddDbContextFactory<AppDbContext>(options =>
-                options.UseSqlite($"Filename={dbPath}"));
-            System.Diagnostics.Debug.WriteLine($"DB PATH: {dbPath}");
+            //Old database code
+            //var dbPath = Path.Combine(FileSystem.AppDataDirectory, "hearth.db");
+            //builder.Services.AddDbContextFactory<AppDbContext>(options =>
+            //    options.UseSqlite($"Filename={dbPath}"));
+            //System.Diagnostics.Debug.WriteLine($"DB PATH: {dbPath}");
+            builder.Services.AddDbContextFactory<AppDbContext>(o => o.UseNpgsql(Secrets.ConnectionString));
+            builder.Services.AddSingleton<IDeviceIdProvider, PreferencesDeviceIdProvider>();
+            builder.Services.AddSingleton<RemedyService>();
+            //builder.Services.AddDbContext<AppDbContext>(options =>
+            //    options.UseNpgsql(Secrets.ConnectionString));
+
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
