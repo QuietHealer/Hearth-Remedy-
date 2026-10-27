@@ -20,6 +20,7 @@ namespace HearthRemedies
     		builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<HearthRemedies.Controller.PostFilterState>();
 
             return builder.Build();
         }

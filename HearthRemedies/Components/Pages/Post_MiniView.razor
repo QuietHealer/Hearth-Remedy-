@@ -8,7 +8,8 @@
                 <img class="post-image" src="@Post.ImgUrl" alt="@Post.Name" />
             }
             <h3 class="post-title">@Post.Name</h3>
-            <span class="post-category">@Post.Category</span>
+            <span class="post-category">@Post.Category.GetDisplayName()</span>
+            <span class="post-category">@Post.UsageMethod.GetDisplayName()</span>
             @if (!string.IsNullOrWhiteSpace(Post.Description))
             {
                 <p class="post-description">@Post.Description</p>
