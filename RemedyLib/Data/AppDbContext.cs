@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
         {
             e.HasKey(p => p.Id);
             e.Property(p => p.Title).IsRequired().HasMaxLength(100);
+            e.Property(p => p.Description).IsRequired().HasMaxLength(300);
             e.Property(p => p.Ingredients).IsRequired().HasMaxLength(2000);
             e.Property(p => p.Steps).IsRequired().HasMaxLength(4000);
             e.Property(p => p.Category).IsRequired().HasMaxLength(40);

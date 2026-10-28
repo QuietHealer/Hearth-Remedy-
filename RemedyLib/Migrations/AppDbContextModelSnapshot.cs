@@ -41,6 +41,11 @@ namespace RemedyLib.Migrations
                     b.Property<DateTime>("CreatedUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)");
+
                     b.Property<string>("Ingredients")
                         .IsRequired()
                         .HasMaxLength(2000)
@@ -82,6 +87,7 @@ namespace RemedyLib.Migrations
                             AuthorDeviceId = "seed",
                             Category = "Sore Throat",
                             CreatedUtc = new DateTime(2026, 10, 1, 12, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "",
                             Ingredients = "1 tbsp honey\nJuice of half a lemon\n1 cup warm (not boiling) water",
                             IsFlagged = false,
                             IsHidden = false,
@@ -95,6 +101,7 @@ namespace RemedyLib.Migrations
                             AuthorDeviceId = "seed",
                             Category = "Cold & Flu",
                             CreatedUtc = new DateTime(2026, 10, 1, 12, 1, 0, 0, DateTimeKind.Utc),
+                            Description = "",
                             Ingredients = "A bowl of hot water\nA towel",
                             IsFlagged = false,
                             IsHidden = false,
@@ -108,6 +115,7 @@ namespace RemedyLib.Migrations
                             AuthorDeviceId = "seed",
                             Category = "Skin",
                             CreatedUtc = new DateTime(2026, 10, 1, 12, 2, 0, 0, DateTimeKind.Utc),
+                            Description = "",
                             Ingredients = "1 cup plain oats, ground into a fine powder\nA tub of lukewarm water",
                             IsFlagged = false,
                             IsHidden = false,

@@ -18,6 +18,7 @@ public class PostSummary
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
     public string Category { get; set; } = "";
     public UsageMethod UsageMethod { get; set; }
     public DateTime CreatedUtc { get; set; }
@@ -36,6 +37,7 @@ public class PostDetail : PostSummary
 public class NewPost
 {
     public string Title { get; set; } = "";
+    public string Description { get; set; } = "";
     public string Ingredients { get; set; } = "";
     public string Steps { get; set; } = "";
     public string Category { get; set; } = "";

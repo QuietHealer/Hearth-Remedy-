@@ -108,12 +108,15 @@ public class RemedyService
     public async Task<Result<Guid>> CreatePostAsync(NewPost input)
     {
         var title = Clean(input.Title);
+        var description = Clean(input.Description);
         var ingredients = Clean(input.Ingredients);
         var steps = Clean(input.Steps);
         var category = input.Category?.Trim() ?? "";
 
         if (title.Length < 3 || title.Length > 100)
             return Result<Guid>.Fail("Title must be 3 to 100 characters.");
+        if (description.Length > 300)
+            return Result<Guid>.Fail("Description must be 300 characters or fewer.");
         if (ingredients.Length < 1 || ingredients.Length > 2000)
             return Result<Guid>.Fail("Ingredients are required (up to 2000 characters).");
         if (steps.Length < 1 || steps.Length > 4000)
@@ -122,7 +125,7 @@ public class RemedyService
             return Result<Guid>.Fail("Please choose a category.");
         if (!Enum.IsDefined(input.UsageMethod))
             return Result<Guid>.Fail("Please choose how the remedy is used.");
-        if (ContainsBlockedWord($"{title} {ingredients} {steps}"))
+        if (ContainsBlockedWord($"{title} {description} {ingredients} {steps}"))
             return Result<Guid>.Fail("Your post contains words that aren't allowed.");
 
         var deviceId = _device.GetDeviceId();
@@ -137,6 +140,7 @@ public class RemedyService
         {
             Id = Guid.NewGuid(),
             Title = title,
+            Description = description,
             Ingredients = ingredients,
             Steps = steps,
             Category = category,
