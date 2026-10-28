@@ -10,9 +10,11 @@
 {
     <div>
         <h3>@p.Title</h3>
+        <p>@p.Description</p>
         <button aria-label="Upvote" @onclick="() => Vote(p, 1)">▲</button>
         <span>@p.Score</span>
         <button aria-label="Downvote" @onclick="() => Vote(p, -1)">▼</button>
+
     </div>
 }
 

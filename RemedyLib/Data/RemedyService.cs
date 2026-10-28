@@ -72,6 +72,7 @@ public class RemedyService
             {
                 Id = p.Id,
                 Title = p.Title,
+                Description= p.Description,
                 Category = p.Category,
                 UsageMethod = p.UsageMethod,
                 CreatedUtc = p.CreatedUtc,
