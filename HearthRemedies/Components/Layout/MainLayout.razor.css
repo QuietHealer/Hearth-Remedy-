@@ -1,4 +1,4 @@
-/*.page {
+.page {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -80,7 +80,7 @@ main {
         align-items: center;
         gap: 0.5rem;
         margin-right: auto;*/ /* keeps filters on the left; remove to push them right */
-    /*}
+    }
 
         .filters select {
             border: 1px solid #d6d5d5;
@@ -97,7 +97,7 @@ main {
             cursor: pointer;
             font-size: 0.9rem;
         }
-}*/
+}
 
 /* css Zen Garden default style v1.02 */
 /* css released under Creative Commons License - http://creativecommons.org/licenses/by-nc-sa/1.0/  */
@@ -110,6 +110,7 @@ main {
 
 
 /* basic elements */
+/*
 html {
     margin: 0;
     padding: 0;
@@ -159,6 +160,7 @@ abbr {
 
 
 /* specific divs */
+        /*
 .page-wrapper {
     background: url(http://csszengarden.com/001/zen-bg.jpg) no-repeat top left;
     padding: 0 175px 0 110px;
@@ -307,4 +309,4 @@ footer {
     width: 148px;
     height: 110px;
 }
-
+*/
