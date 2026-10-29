@@ -1,13 +1,13 @@
 ﻿@using HearthRemedies.Model
-
+@using RemedyLib.Data
 <article class="post-card">
     <div class="post-body">
         <section class="post-main">
-            @if (!string.IsNullOrWhiteSpace(Post.ImgUrl))
+            @* @if (!string.IsNullOrWhiteSpace(Post.ImgUrl))
             {
                 <img class="post-image" src="@Post.ImgUrl" alt="@Post.Name" />
-            }
-            <h3 class="post-title">@Post.Name</h3>
+            } *@
+            <h3 class="post-title">@Post.Title</h3>
             <span class="post-category">@Post.Category.GetDisplayName()</span>
             <span class="post-category">@Post.UsageMethod.GetDisplayName()</span>
             @if (!string.IsNullOrWhiteSpace(Post.Description))
@@ -24,29 +24,29 @@
                     <li>@ingredient</li>
                 }
             </ul>
-            @if (Post.Ingredients.Count > MaxIngredients)
+            @* @if (Post.Ingredients.Count > MaxIngredients)
             {
                 <span class="more">+@(Post.Ingredients.Count - MaxIngredients) more</span>
-            }
+            } *@
         </aside>
     </div>
 
     <footer class="post-footer">
         <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
-            ▲ @FormatCount(Post.UpVoteNum)
+            ▲ @FormatCount(Post.Score)//UpVoteNum)
         </button>
         <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
-            ▼ @FormatCount(Post.DownVoteNum)
+            ▼ @FormatCount(Post.Score)//DownVoteNum)
         </button>
-        <time class="post-date">@Post.CreatedAt.ToString("MMM d")</time>
+        <time class="post-date">@Post.CreatedUtc.ToString("MMM d")</time>
     </footer>
 </article>
 
 @code {
-    [Parameter, EditorRequired] public Posts Post { get; set; } = default!;
+    [Parameter, EditorRequired] public Post Post { get; set; } = default!;
 
     // Raised after a vote changes so the parent can save it / re-sort.
-    [Parameter] public EventCallback<Posts> OnVoted { get; set; }
+    [Parameter] public EventCallback<Post> OnVoted { get; set; }
 
     private const int MaxIngredients = 4;
 
@@ -56,14 +56,14 @@
     private async Task Vote(int direction)
     {
         // Undo the current vote first
-        if (myVote == 1) Post.UpVoteNum--;
-        else if (myVote == -1) Post.DownVoteNum--;
+        if (myVote == 1) Post.Score--;
+        else if (myVote == -1) Post.Score--;
 
         // Clicking the same arrow again removes the vote
         myVote = myVote == direction ? 0 : direction;
 
-        if (myVote == 1) Post.UpVoteNum++;
-        else if (myVote == -1) Post.DownVoteNum++;
+        if (myVote == 1) Post.Score++;
+        else if (myVote == -1) Post.Score++;
 
         await OnVoted.InvokeAsync(Post);
     }

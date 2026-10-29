@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using HearthRemedies.Model
 @inject PostFilterState Filters
+@using RemedyLib.Data
+@inject RemedyService Remedies
 @implements IDisposable
 
 <h1>Results</h1>
@@ -17,16 +19,21 @@
 
 @code
 {
-    private List<Posts> results = new();
+    private List<Post> posts = new();
 
     private static List<string> ingredients = new() { "Honey", "Water" };
     private static List<string> steps = new() { "Mix honey and water together.", "Stir until well combined.", "Serve chilled or over ice." };
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await Remedies.GetFeedAsync(FeedSort.Top, DateRange.AllTime);
+    }
 
     protected override void OnInitialized()
     {
         // Redraw this page whenever a filter in the top bar changes
         Filters.OnChange += HandleFilterChanged;
-
+        /*
         results.Add(new Posts
         {
             Name = "Honey Water",
@@ -44,14 +51,14 @@
             Steps = steps,
             Category = RemedyType.Skin,
             UsageMethod = RemedyMethod.Skin
-        });
+        });*/
     }
 
-    private IEnumerable<Posts> FilteredResults
+    private IEnumerable<Post> FilteredResults
     {
         get
         {
-            var query = results.Where(p => !p.IsHidden);
+            var query = posts.Where(p => !p.IsHidden);
 
             if (Filters.Type is not null)
                 query = query.Where(p => p.Category == Filters.Type);
@@ -61,8 +68,8 @@
 
             return Filters.Sort switch
             {
-                PostSort.Top => query.OrderByDescending(p => p.UpVoteNum - p.DownVoteNum),
-                _ => query.OrderByDescending(p => p.CreatedAt)
+                PostSort.Top => query.OrderByDescending(p => p.Score),// .UpVoteNum - p.DownVoteNum),
+                _ => query.OrderByDescending(p => p.CreatedUtc)//.CreatedAt)
             };
         }
     }
