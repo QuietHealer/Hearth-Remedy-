@@ -19,9 +19,12 @@ public class AppDbContext : DbContext
             e.Property(p => p.Description).IsRequired().HasMaxLength(300);
             e.Property(p => p.Ingredients).IsRequired().HasMaxLength(2000);
             e.Property(p => p.Steps).IsRequired().HasMaxLength(4000);
-            e.Property(p => p.Category).IsRequired().HasMaxLength(40);
             e.Property(p => p.AuthorDeviceId).IsRequired().HasMaxLength(64);
+
+            // Enums are stored as readable text ("SoreThroat"), not numbers.
+            e.Property(p => p.Category).HasConversion<string>().HasMaxLength(40);
             e.Property(p => p.UsageMethod).HasConversion<string>().HasMaxLength(10);
+
             e.HasIndex(p => p.CreatedUtc);
             e.HasIndex(p => p.Category);
         });
@@ -54,7 +57,8 @@ public class AppDbContext : DbContext
             {
                 Id = new Guid("11111111-1111-1111-1111-111111111111"),
                 Title = "Honey and lemon for a sore throat",
-                Category = "Sore Throat",
+                Description = "A warm, soothing drink that coats the throat.",
+                Category = Category.Throat,
                 UsageMethod = UsageMethod.Eat,
                 Ingredients = "1 tbsp honey\nJuice of half a lemon\n1 cup warm (not boiling) water",
                 Steps = "Stir the honey and lemon juice into the warm water.\nSip slowly.\nDo not give honey to children under 1 year old.",
@@ -65,7 +69,8 @@ public class AppDbContext : DbContext
             {
                 Id = new Guid("22222222-2222-2222-2222-222222222222"),
                 Title = "Steam for a stuffy nose",
-                Category = "Cold & Flu",
+                Description = "Warm steam helps loosen congestion.",
+                Category = Category.ColdAndFlu,
                 UsageMethod = UsageMethod.Breathe,
                 Ingredients = "A bowl of hot water\nA towel",
                 Steps = "Pour hot (not boiling) water into a bowl.\nLean over it at a safe distance with a towel over your head.\nBreathe slowly for 5 to 10 minutes.\nKeep children away from hot water.",
@@ -76,7 +81,8 @@ public class AppDbContext : DbContext
             {
                 Id = new Guid("33333333-3333-3333-3333-333333333333"),
                 Title = "Oatmeal bath for itchy skin",
-                Category = "Skin",
+                Description = "A gentle soak that calms dry, irritated skin.",
+                Category = Category.Skin,
                 UsageMethod = UsageMethod.Skin,
                 Ingredients = "1 cup plain oats, ground into a fine powder\nA tub of lukewarm water",
                 Steps = "Stir the oat powder into lukewarm bathwater.\nSoak for 15 to 20 minutes.\nPat skin dry and moisturize.",

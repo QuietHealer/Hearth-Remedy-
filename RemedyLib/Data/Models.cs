@@ -1,6 +1,25 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RemedyLib.Data;
 
 public enum UsageMethod { Skin, Eat, Breathe }
+
+public enum Category
+{
+    [Display(Name = "Cold & Flu")] ColdAndFlu,
+    Throat,
+    Stomach,
+    Headache,
+    Skin,
+    Sleep,
+    [Display(Name = "Stress & Anxiety")] Stress,
+    Other
+}
+
+public enum FeedSort { Top, New }
+
+public enum DateRange { Week, Month, AllTime }
 
 public class Post
 {
@@ -9,7 +28,7 @@ public class Post
     public string Description { get; set; } = "";
     public string Ingredients { get; set; } = "";
     public string Steps { get; set; } = "";
-    public string Category { get; set; } = "";
+    public Category Category { get; set; }
     public UsageMethod UsageMethod { get; set; }
     public DateTime CreatedUtc { get; set; }
     public string AuthorDeviceId { get; set; } = "";
@@ -22,6 +41,16 @@ public class Post
 
     public List<Vote> Votes { get; set; } = new();
     public List<Report> Reports { get; set; } = new();
+
+    // Not stored in the database. RemedyService fills these in when it loads posts.
+
+    /// <summary>Total of all votes on this post.</summary>
+    [NotMapped]
+    public int Score { get; set; }
+
+    /// <summary>This device's own vote: 1, -1, or 0 for none.</summary>
+    [NotMapped]
+    public int MyVote { get; set; }
 }
 
 public class Vote
