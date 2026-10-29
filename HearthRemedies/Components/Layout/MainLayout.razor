@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject PostFilterState Filters
+
 
 <div class="page">
     <div class="sidebar">
@@ -7,7 +9,33 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <div class="filters">
+                <select @bind:get="Filters.Type" @bind:set="Filters.SetType" aria-label="Type">
+                    <option value="">All types</option>
+                    @foreach (var type in Enum.GetValues<RemedyType>())
+                    {
+                        <option value="@type">@type.GetDisplayName()</option>
+                    }
+                </select>
+
+                <select @bind:get="Filters.Method" @bind:set="Filters.SetMethod" aria-label="Method">
+                    <option value="">All methods</option>
+                    @foreach (var method in Enum.GetValues<RemedyMethod>())
+                    {
+                        <option value="@method">@method.GetDisplayName()</option>
+                    }
+                </select>
+
+                <select @bind:get="Filters.Sort" @bind:set="Filters.SetSort" aria-label="Sort">
+                    <option value="@PostSort.Newest">Newest</option>
+                    <option value="@PostSort.Top">Top voted</option>
+                </select>
+
+                @if (Filters.IsFiltered)
+                {
+                    <button class="clear" @onclick="Filters.Clear">Clear</button>
+                }
+            </div>
         </div>
 
         <article class="content px-4">

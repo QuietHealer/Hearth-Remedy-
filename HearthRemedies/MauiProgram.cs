@@ -46,7 +46,9 @@ namespace HearthRemedies
                 using var db = factory.CreateDbContext();
                 db.Database.EnsureCreated();
             }
+            builder.Services.AddSingleton<HearthRemedies.Controller.PostFilterState>();
             return app;
+            
         }
     }
 }

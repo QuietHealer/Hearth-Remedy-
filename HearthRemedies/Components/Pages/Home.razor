@@ -1,7 +1,74 @@
 ﻿@page "/"
+@using HearthRemedies.Model
+@inject PostFilterState Filters
+@implements IDisposable
 
-<h1>Hello, world!</h1>
+<h1>Results</h1>
 
-Welcome to your new app.
+@foreach (var result in FilteredResults)
+{
+    <Post_MiniView @key="result" Post="result" />
+}
 
-Lorem Ipsum
+@if (!FilteredResults.Any())
+{
+    <p>No remedies in this category yet.</p>
+}
+
+@code
+{
+    private List<Posts> results = new();
+
+    private static List<string> ingredients = new() { "Honey", "Water" };
+    private static List<string> steps = new() { "Mix honey and water together.", "Stir until well combined.", "Serve chilled or over ice." };
+
+    protected override void OnInitialized()
+    {
+        // Redraw this page whenever a filter in the top bar changes
+        Filters.OnChange += HandleFilterChanged;
+
+        results.Add(new Posts
+        {
+            Name = "Honey Water",
+            Description = "A refreshing drink made with honey and water.",
+            Ingredients = ingredients,
+            Steps = steps,
+            Category = RemedyType.Throat,
+            UsageMethod = RemedyMethod.Drink
+        });
+        results.Add(new Posts
+        {
+            Name = "Honey Lemon",
+            Description = "A refreshing drink made with honey and lemon.",
+            Ingredients = ingredients,
+            Steps = steps,
+            Category = RemedyType.Skin,
+            UsageMethod = RemedyMethod.Skin
+        });
+    }
+
+    private IEnumerable<Posts> FilteredResults
+    {
+        get
+        {
+            var query = results.Where(p => !p.IsHidden);
+
+            if (Filters.Type is not null)
+                query = query.Where(p => p.Category == Filters.Type);
+
+            if (Filters.Method is not null)
+                query = query.Where(p => p.UsageMethod == Filters.Method);
+
+            return Filters.Sort switch
+            {
+                PostSort.Top => query.OrderByDescending(p => p.UpVoteNum - p.DownVoteNum),
+                _ => query.OrderByDescending(p => p.CreatedAt)
+            };
+        }
+    }
+
+    private void HandleFilterChanged() => InvokeAsync(StateHasChanged);
+
+    // Unsubscribe when leaving the page, or the service keeps calling a page that's gone
+    public void Dispose() => Filters.OnChange -= HandleFilterChanged;
+}
