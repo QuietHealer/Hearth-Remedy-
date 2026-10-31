@@ -1,0 +1,47 @@
+﻿@page "/newpost"
+@using RemedyLib.Data
+
+<h3>Create your new post</h3>
+
+<EditForm Model="newPost" FormName="AddPostForm" OnValidSubmit="AddPost">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText @bind-Value="newPost.Title" placeholder="Title"></InputText>
+    <br />
+    <InputText @bind-Value="newPost.Description" placeholder="Description"></InputText>
+    <br />
+    <InputText @bind-Value="newPost.Ingredients" placeholder="Ingredients"></InputText>
+    <br/>
+    <InputText @bind-Value="newPost.Steps" placeholder="Steps"></InputText>
+    <br />
+    <InputSelect TValue="Category" placeholder="Remedy type" @bind-Value="newPost.Category">
+        <option value=null>Select a remedy type</option>
+        @foreach (Category remedy in Enum.GetValues<RemedyType>())
+        {
+            <option value="@remedy">@remedy</option>
+        }
+    </InputSelect>
+    <InputSelect TValue="UsageMethod" placeholder="Usage Method" @bind-Value="newPost.UsageMethod">
+        <option value=null>Select a usage method</option>
+        @foreach (UsageMethod usage in Enum.GetValues<UsageMethod>())
+        {
+            <option value="@usage">@usage</option>
+        }
+    </InputSelect>
+    <br />
+    <label for="Hidden">Hide post</label>
+    <InputCheckbox id="Hidden" @bind-Value="newPost.IsHidden">
+        <input type="checkbox" />
+    </InputCheckbox>
+</EditForm>
+
+@code {
+    private Post newPost { get; set; } = new Post();
+
+    private void AddPost()
+    {
+        Home.posts.Add(newPost);
+        newPost = new Post();
+        
+    }
+}
