@@ -45,7 +45,7 @@
 
     <footer class="post-footer">
         <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
-            ▲ @FormatCount(GetVotes())
+            ▲  @FormatCount(GetVotes())
         </button>
         <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
             ▼ @FormatCount(GetVotes(false))
@@ -73,6 +73,9 @@
 
     // 1 = upvoted, -1 = downvoted, 0 = no vote
     private int myVote;
+    private int postUp = 0;
+    private int postDown = 0;
+    int test = 0;
     private int GetVotes(bool postive = true)
     {
         int count = 0;
@@ -89,33 +92,48 @@
             {
                 if (vote.Value == -1)
                     count--;
-                
+
             }
 
         }
-/*
+        /*
         if (postive)
         {
-            if (myVote == 1)
-                count++;
-            if (myVote == -1)
-                count--;
-        }*/
-        return count;
+            // if (myVote == 1)
+            count += postUp;
+            }
+        else
+        {
+            // if (myVote == -1)
+            count+=postDown;
+            }*/
+        
+        if (postive)
+        {
+            if (Post.MyVote == 1)
+                count += Post.MyVote;
+            }
+        else
+        {
+            if (Post.MyVote == -1)
+                count += Post.MyVote;
+            }
+
+    return count;
     }
     private async Task Vote(int direction)
     {
         // Undo the current vote first
-        /*
-        if (myVote == 1) Post.Score--;
-        else if (myVote == -1) Post.Score--;
+
+        if (myVote == 1) postUp--;
+        else if (myVote == -1) postDown--;
 
         // Clicking the same arrow again removes the vote
-
-        if (myVote == 1) Post.Score++;
-        else if (myVote == -1) Post.Score++;
-        */
         myVote = myVote == direction ? 0 : direction;
+
+        if (myVote == 1) postDown++;
+        else if (myVote == -1) postDown++;
+
         await VoteData(direction);
 
         await OnVoted.InvokeAsync(Post);
