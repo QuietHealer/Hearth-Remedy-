@@ -78,11 +78,14 @@ public class RemedyService
                 Id = p.Id,
                 Title = p.Title,
                 Description = p.Description,
+                Ingredients = p.Ingredients,
+                Steps = p.Steps,
                 Category = p.Category,
                 UsageMethod = p.UsageMethod,
                 CreatedUtc = p.CreatedUtc,
                 Score = p.Votes.Sum(v => v.Value),
-                MyVote = p.Votes.Where(v => v.DeviceId == deviceId).Select(v => v.Value).FirstOrDefault()
+                MyVote = p.Votes.Where(v => v.DeviceId == deviceId).Select(v => v.Value).FirstOrDefault(),
+                Votes=p.Votes,
             })
             .ToListAsync();
     }

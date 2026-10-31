@@ -1,5 +1,7 @@
 ﻿@using HearthRemedies.Model
 @using RemedyLib.Data
+@inject RemedyService Remedies
+
 <article class="post-card">
     <div class="post-body">
         <section class="post-main">
@@ -19,7 +21,17 @@
         <aside class="post-ingredients">
             <h4>Ingredients</h4>
             <ul>
-                @foreach (var ingredient in Post.Ingredients.Take(MaxIngredients))
+                @if (unformatedIngredients)
+                {
+                    unformatedIngredients = false;
+                    ingredients = Post.Ingredients.Split("\n", 4);
+                    foreach (string ing in ingredients)
+                    {
+                        ing.Replace(",", "");
+
+                    }
+                }
+                @foreach (var ingredient in ingredients)
                 {
                     <li>@ingredient</li>
                 }
@@ -33,10 +45,10 @@
 
     <footer class="post-footer">
         <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
-            ▲ @FormatCount(Post.Score)//UpVoteNum)
+            ▲ @FormatCount(GetVotes())
         </button>
         <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
-            ▼ @FormatCount(Post.Score)//DownVoteNum)
+            ▼ @FormatCount(GetVotes(false))
         </button>
         <time class="post-date">@Post.CreatedUtc.ToString("MMM d")</time>
     </footer>
@@ -47,23 +59,64 @@
 
     // Raised after a vote changes so the parent can save it / re-sort.
     [Parameter] public EventCallback<Post> OnVoted { get; set; }
-
+    bool unformatedIngredients = true;
     private const int MaxIngredients = 4;
+    private string[] ingredients = new string[MaxIngredients];
+
+    async Task VoteData(int dir)
+    {
+
+        var updated = await Remedies.VoteAsync(Post.Id, dir);
+        if (updated is not null) { Post.Score = updated.Score; Post.MyVote = updated.MyVote; }
+    }
+
 
     // 1 = upvoted, -1 = downvoted, 0 = no vote
     private int myVote;
+    private int GetVotes(bool postive = true)
+    {
+        int count = 0;
+        foreach (Vote vote in Post.Votes)
+        {
+            if (postive)
+            {
+                if (vote.Value == 1)
+                    count++;
 
+
+            }
+            else
+            {
+                if (vote.Value == -1)
+                    count--;
+                
+            }
+
+        }
+/*
+        if (postive)
+        {
+            if (myVote == 1)
+                count++;
+            if (myVote == -1)
+                count--;
+        }*/
+        return count;
+    }
     private async Task Vote(int direction)
     {
         // Undo the current vote first
+        /*
         if (myVote == 1) Post.Score--;
         else if (myVote == -1) Post.Score--;
 
         // Clicking the same arrow again removes the vote
-        myVote = myVote == direction ? 0 : direction;
 
         if (myVote == 1) Post.Score++;
         else if (myVote == -1) Post.Score++;
+        */
+        myVote = myVote == direction ? 0 : direction;
+        await VoteData(direction);
 
         await OnVoted.InvokeAsync(Post);
     }
