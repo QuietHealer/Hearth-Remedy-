@@ -1,17 +1,264 @@
-.dropdown-section {
-    margin-bottom: 1rem;
-    padding: .75rem 1rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background: #fafafa;
+/* Same warm palette as Post_MiniView */
+.post-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1rem 0 2rem;
+    color: #2b1d14;
 }
 
-.dropdown-title {
-    font-size: 1.1rem;
+.back-btn {
+    border: 1.5px solid #3b2a1e;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+    .back-btn:hover {
+        background: #f1dfc6;
+    }
+
+.empty-state {
+    padding: 1rem;
+    border: 1.5px dashed #c9b49a;
+    border-radius: 10px;
+    background: #fffaf3;
+    color: #6b3f1d;
+    text-align: center;
+}
+
+/* ---------- Header card ---------- */
+
+.post-header {
+    background: #fffaf3;
+    border: 2px solid #3b2a1e;
+    border-radius: 14px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1rem;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+}
+
+.tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #f1dfc6;
+    color: #6b3f1d;
+    border-radius: 999px;
+    padding: 0.2rem 0.65rem;
+}
+
+.tag-method {
+    background: #e3ecd9;
+    color: #3d5a2a;
+}
+
+.tag-hidden {
+    background: #e2e2e2;
+    color: #555;
+}
+
+.tag-reported {
+    background: #f8d7d7;
+    color: #9b1c1c;
+}
+
+.post-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 0.25rem;
+    overflow-wrap: anywhere;
+}
+
+.post-date {
+    display: block;
+    font-size: 0.85rem;
+    color: #8a7766;
+    margin-bottom: 0.9rem;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 0.9rem;
+}
+
+.post-description {
+    font-size: 1rem;
+    line-height: 1.55;
+    color: #3f3027;
+    margin: 0 0 1rem;
+    white-space: pre-line; /* keep line breaks the author typed */
+}
+
+.vote-bar {
+    display: flex;
+    gap: 0.5rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid #ead9c3;
+}
+
+.vote {
+    border: 1.5px solid #3b2a1e;
+    background: #fff;
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
+    transition: background 0.15s, color 0.15s;
 }
 
-.dropdown-section[open] {
-    background: #f0f0f0;
+    .vote.up:hover {
+        background: #e8f3e8;
+    }
+
+    .vote.down:hover {
+        background: #fbe9e9;
+    }
+
+    .vote.up.active {
+        background: #2e7d32;
+        border-color: #2e7d32;
+        color: #fff;
+    }
+
+    .vote.down.active {
+        background: #c62828;
+        border-color: #c62828;
+        color: #fff;
+    }
+
+/* ---------- Ingredients / Steps ---------- */
+
+.section {
+    background: #fff;
+    border: 1.5px solid #3b2a1e;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    background: #faf3e8;
+    user-select: none;
+}
+
+    /* Chevron that turns when the section opens */
+    .section-title::after {
+        content: "▸";
+        margin-left: auto;
+        color: #6b3f1d;
+        transition: transform 0.15s;
+    }
+
+.section[open] .section-title {
+    border-bottom: 1px solid #ead9c3;
+}
+
+    .section[open] .section-title::after {
+        transform: rotate(90deg);
+    }
+
+.count {
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #3b2a1e;
+    color: #fff;
+    border-radius: 999px;
+    padding: 0.05rem 0.5rem;
+}
+
+.ingredient-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 1.1rem;
+}
+
+    .ingredient-list li {
+        position: relative;
+        padding: 0.45rem 0 0.45rem 1.4rem;
+        border-bottom: 1px dashed #ead9c3;
+        overflow-wrap: anywhere;
+    }
+
+        .ingredient-list li:last-child {
+            border-bottom: none;
+        }
+
+        .ingredient-list li::before {
+            content: "";
+            position: absolute;
+            left: 0.2rem;
+            top: 0.95rem;
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 50%;
+            background: #d9822b;
+        }
+
+/* Numbered circles for each step */
+.step-list {
+    list-style: none;
+    counter-reset: step;
+    margin: 0;
+    padding: 0.75rem 1.1rem;
+}
+
+    .step-list li {
+        counter-increment: step;
+        position: relative;
+        padding: 0.2rem 0 0.9rem 2.6rem;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+        .step-list li:last-child {
+            padding-bottom: 0.2rem;
+        }
+
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.85rem;
+            height: 1.85rem;
+            border-radius: 50%;
+            background: #3b2a1e;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+@media (max-width: 640px) {
+    .post-header {
+        padding: 1rem;
+    }
+
+    .post-title {
+        font-size: 1.5rem;
+    }
 }

@@ -15,9 +15,9 @@
     <br />
     <InputText @bind-Value="newPost.Description" placeholder="Description"></InputText>
     <br />
-    <InputText @bind-Value="newPost.Ingredients" placeholder="Ingredients"></InputText>
+    <InputTextArea @bind-Value="newPost.Ingredients" rows="4" placeholder="Ingredients (one per line)"></InputTextArea>
     <br/>
-    <InputText @bind-Value="newPost.Steps" placeholder="Steps"></InputText>
+    <InputTextArea @bind-Value="newPost.Steps" rows="5" placeholder="Steps (one per line)"></InputTextArea>
     <br />
     <InputSelect TValue="Category" placeholder="Remedy type" @bind-Value="newPost.Category">
         <option value=null>Select a remedy type</option>
