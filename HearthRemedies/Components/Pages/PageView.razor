@@ -5,45 +5,69 @@
 @inject PostTransferService PostTransfer
 @inject NavigationManager Nav
 
-<button class="back-btn" @onclick="GoBack">
-    ← Back
-</button>
+<div class="post-page">
+    <button class="back-btn" @onclick="GoBack">
+        ← Back
+    </button>
 
-@if (post == null)
-{
-    <div class="alert alert-warning mt-4">
-        No post was provided.
-    </div>
-}
-else
-{
-    <div class="container mt-4">
-
-        <!-- Title + Category -->
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>@post.Title</h2>
-            <span class="badge bg-primary fs-6">@post.Category</span>
-            <span class="badge bg-primary fs-6">@post.UsageMethod</span>
+    @if (post == null)
+    {
+        <div class="empty-state">
+            No post was provided.
         </div>
+    }
+    else
+    {
+        <!-- Header: tags, title, date, description, votes -->
+        <section class="post-header">
+            <div class="tags">
+                <span class="tag">@post.Category.GetDisplayName()</span>
+                <span class="tag tag-method">@post.UsageMethod.GetDisplayName()</span>
+                @if (post.IsHidden)
+                {
+                    <span class="tag tag-hidden">Hidden</span>
+                }
+                @if (post.Reports.Count > 0)
+                {
+                    <span class="tag tag-reported">Reports: @post.Reports.Count</span>
+                }
+            </div>
 
-        <!-- Image -->
-        @* @if (!string.IsNullOrWhiteSpace(post.ImgUrl))
-        {
-            <img src="@post.ImgUrl" class="img-fluid rounded mb-3 shadow-sm" alt="@post.Name" />
-        } *@
+            <h1 class="post-title">@post.Title</h1>
+            <time class="post-date">Posted @post.CreatedUtc.ToLocalTime().ToString("MMMM d, yyyy")</time>
 
-        <!-- Description -->
-        <details class="dropdown-section">
-            <summary class="dropdown-title">Description</summary>
-            <p>@post.Description</p>
-        </details>
+            @* @if (!string.IsNullOrWhiteSpace(post.ImgUrl))
+            {
+                <img src="@post.ImgUrl" class="post-image" alt="@post.Title" />
+            } *@
 
+            @if (!string.IsNullOrWhiteSpace(post.Description))
+            {
+                <p class="post-description">@post.Description</p>
+            }
+
+            <!-- Voting -->
+            <div class="vote-bar">
+                <button class="vote up @(post.MyVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
+                    ▲ @FormatCount(GetVotes())
+                </button>
+                <button class="vote down @(post.MyVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
+                    ▼ @FormatCount(GetVotes(false))
+                </button>
+
+                <!-- <button class="btn btn-warning" @onclick="Report">
+                    ⚠️ Report
+                </button> -->
+            </div>
+        </section>
 
         <!-- Ingredients -->
-        <details class="dropdown-section">
-            
-            <summary class="dropdown-title">Ingredients (ingredients.Length)</summary>
-            <ul>
+        <details class="section" open>
+            <summary class="section-title">
+                Ingredients
+                <span class="count">@ingredients.Length</span>
+            </summary>
+            <ul class="ingredient-list">
                 @foreach (var ingredient in ingredients)
                 {
                     <li>@ingredient</li>
@@ -51,132 +75,75 @@ else
             </ul>
         </details>
 
-
         <!-- Steps -->
-        <details class="dropdown-section">
-            <summary class="dropdown-title">Steps (steps.Length)</summary>
-            <ol>
+        <details class="section" open>
+            <summary class="section-title">
+                Steps
+                <span class="count">@steps.Length</span>
+            </summary>
+            <ol class="step-list">
                 @foreach (var step in steps)
                 {
                     <li>@step</li>
                 }
             </ol>
         </details>
-
-
-        
-
-        <!-- Metadata -->
-        <div class="text-muted mb-3">
-            <small>Created: @post.CreatedUtc.ToString("MMMM dd, yyyy")</small><br />
-            @if (post.IsHidden)
-            {
-                <span class="badge bg-secondary">Hidden</span>
-            }
-            @if (post.Reports.Count > 0)
-            {
-                <span class="badge bg-danger">Reports: @post.Reports.Count</span>
-            }
-        </div>
-
-        <!-- Voting -->
-        <div class="d-flex gap-3 mb-4">
-            <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
-            ▲  @FormatCount(GetVotes())
-        </button>
-        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
-            ▼ @FormatCount(GetVotes(false))
-        </button>
-
-            <!-- <button class="btn btn-warning" @onclick="Report">
-                ⚠️ Report
-            </button> -->
-        </div>
-
-    </div>
-}
+    }
+</div>
 
 @code {
     private Post? post;
 
-    private int myVote;
-    public string[] ingredients;
-    public string[] steps;
+    // This device's vote when the page opened. post.Votes already includes it,
+    // so it's swapped out for the current post.MyVote when counting.
+    private int startingVote;
+    public string[] ingredients = Array.Empty<string>();
+    public string[] steps = Array.Empty<string>();
     [Parameter] public EventCallback<Post> OnVoted { get; set; }
 
     protected override void OnInitialized()
     {
         post = PostTransfer.CurrentPost;
-        myVote = 0;
         if (post != null)
         {
-            ingredients = post.Ingredients.Split("\n");
-            steps = post.Steps.Split("\n");
+            startingVote = post.MyVote;
+            ingredients = SplitIngredients(post.Ingredients);
+            steps = SplitLines(post.Steps);
         }
     }
+
+    // One item per line, ignoring blank lines and stray "\r" from Windows line endings
+    private static string[] SplitLines(string text) =>
+        text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    // Ingredients typed on one line ("Egg, Cheese") are split on commas.
+    // Ones typed one per line keep their commas ("1 cup oats, ground fine").
+    private static string[] SplitIngredients(string text) =>
+        text.Contains('\n')
+            ? SplitLines(text)
+            : text.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
     private int GetVotes(bool postive = true)
     {
-        int count = 0;
-        foreach (Vote vote in post.Votes)
-        {
-            if (postive)
-            {
-                if (vote.Value == 1)
-                    count++;
+        if (post == null) return 0;
 
+        int value = postive ? 1 : -1;
+        int count = post.Votes.Count(v => v.Value == value);
 
-            }
-            else
-            {
-                if (vote.Value == -1)
-                    count--;
+        if (startingVote == value) count--;
+        if (post.MyVote == value) count++;
 
-            }
-
-        }
-        /*
-        if (postive)
-        {
-            // if (myVote == 1)
-            count += postUp;
-            }
-        else
-        {
-            // if (myVote == -1)
-            count+=postDown;
-            }*/
-        
-        if (postive)
-        {
-            if (post.MyVote == 1)
-                count += post.MyVote;
-            }
-        else
-        {
-            if (post.MyVote == -1)
-                count += post.MyVote;
-            }
-
-    return count;
+        return count;
     }
 
     async Task VoteData(int dir)
     {
-
-        var updated = await Remedies.VoteAsync(post.Id, dir);
+        var updated = await Remedies.VoteAsync(post!.Id, dir);
         if (updated is not null) { post.Score = updated.Score; post.MyVote = updated.MyVote; }
     }
+
     private async Task Vote(int direction)
     {
-        // Undo the current vote first
-        // if (myVote == 1) post.UpVoteNum--;
-        // else if (myVote == -1) post.DownVoteNum--;
-
-        // Clicking the same arrow again removes the vote
-        // myVote = myVote == direction ? 0 : direction;
-
-        // if (myVote == 1) post.UpVoteNum++;
-        // else if (myVote == -1) post.DownVoteNum++;
         await VoteData(direction);
 
         await OnVoted.InvokeAsync(post);
