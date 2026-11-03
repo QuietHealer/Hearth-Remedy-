@@ -3,7 +3,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RemedyLib.Data;
 
-public enum UsageMethod { Skin, Eat, Breathe }
+public enum UsageMethod {
+    Drink,
+    [Display(Name = "Food / Solid")] Solid,
+    [Display(Name = "On the Skin")] Skin,
+    Inhale,
+    Bath,
+    Other
+}
 
 public enum Category
 {

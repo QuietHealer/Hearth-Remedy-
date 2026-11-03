@@ -18,7 +18,7 @@
     <br />
     <InputSelect TValue="Category" placeholder="Remedy type" @bind-Value="newPost.Category">
         <option value=null>Select a remedy type</option>
-        @foreach (Category remedy in Enum.GetValues<RemedyType>())
+        @foreach (Category remedy in Enum.GetValues<Category>())
         {
             <option value="@remedy">@remedy</option>
         }
