@@ -46,10 +46,10 @@
     </div>
 
     <footer class="post-footer">
-        <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
+        <button class="vote up @(myVote == 1 ? "active" : "")" @onclick:stopPropagation @onclick="() => Vote(1)" aria-label="Upvote">
             ▲  @FormatCount(GetVotes())
         </button>
-        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
+        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick:stopPropagation @onclick="() => Vote(-1)" aria-label="Downvote">
             ▼ @FormatCount(GetVotes(false))
         </button>
         <time class="post-date">@Post.CreatedUtc.ToString("MMM d")</time>
