@@ -1,4 +1,7 @@
 ﻿@page "/postpage"
+@using HearthRemedies.Model
+@using RemedyLib.Data;
+@inject RemedyService Remedies;
 @inject PostTransferService PostTransfer
 @inject NavigationManager Nav
 
@@ -18,16 +21,16 @@ else
 
         <!-- Title + Category -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2>@post.Name</h2>
+            <h2>@post.Title</h2>
             <span class="badge bg-primary fs-6">@post.Category</span>
             <span class="badge bg-primary fs-6">@post.UsageMethod</span>
         </div>
 
         <!-- Image -->
-        @if (!string.IsNullOrWhiteSpace(post.ImgUrl))
+        @* @if (!string.IsNullOrWhiteSpace(post.ImgUrl))
         {
             <img src="@post.ImgUrl" class="img-fluid rounded mb-3 shadow-sm" alt="@post.Name" />
-        }
+        } *@
 
         <!-- Description -->
         <details class="dropdown-section">
@@ -38,9 +41,10 @@ else
 
         <!-- Ingredients -->
         <details class="dropdown-section">
-            <summary class="dropdown-title">Ingredients (@post.Ingredients.Count)</summary>
+            
+            <summary class="dropdown-title">Ingredients (ingredients.Length)</summary>
             <ul>
-                @foreach (var ingredient in post.Ingredients)
+                @foreach (var ingredient in ingredients)
                 {
                     <li>@ingredient</li>
                 }
@@ -50,9 +54,9 @@ else
 
         <!-- Steps -->
         <details class="dropdown-section">
-            <summary class="dropdown-title">Steps (@post.Steps.Count)</summary>
+            <summary class="dropdown-title">Steps (steps.Length)</summary>
             <ol>
-                @foreach (var step in post.Steps)
+                @foreach (var step in steps)
                 {
                     <li>@step</li>
                 }
@@ -64,25 +68,25 @@ else
 
         <!-- Metadata -->
         <div class="text-muted mb-3">
-            <small>Created: @post.CreatedAt.ToString("MMMM dd, yyyy")</small><br />
+            <small>Created: @post.CreatedUtc.ToString("MMMM dd, yyyy")</small><br />
             @if (post.IsHidden)
             {
                 <span class="badge bg-secondary">Hidden</span>
             }
-            @if (post.ReportCount > 0)
+            @if (post.Reports.Count > 0)
             {
-                <span class="badge bg-danger">Reports: @post.ReportCount</span>
+                <span class="badge bg-danger">Reports: @post.Reports.Count</span>
             }
         </div>
 
         <!-- Voting -->
         <div class="d-flex gap-3 mb-4">
             <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
-                ▲ @FormatCount(post.UpVoteNum)
-            </button>
-            <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
-                ▼ @FormatCount(post.DownVoteNum)
-            </button>
+            ▲  @FormatCount(GetVotes())
+        </button>
+        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
+            ▼ @FormatCount(GetVotes(false))
+        </button>
 
             <!-- <button class="btn btn-warning" @onclick="Report">
                 ⚠️ Report
@@ -93,29 +97,87 @@ else
 }
 
 @code {
-    private Posts? post;
+    private Post? post;
 
     private int myVote;
-
-    [Parameter] public EventCallback<Posts> OnVoted { get; set; }
+    public string[] ingredients;
+    public string[] steps;
+    [Parameter] public EventCallback<Post> OnVoted { get; set; }
 
     protected override void OnInitialized()
     {
         post = PostTransfer.CurrentPost;
         myVote = 0;
+        if (post != null)
+        {
+            ingredients = post.Ingredients.Split("\n");
+            steps = post.Steps.Split("\n");
+        }
+    }
+    private int GetVotes(bool postive = true)
+    {
+        int count = 0;
+        foreach (Vote vote in post.Votes)
+        {
+            if (postive)
+            {
+                if (vote.Value == 1)
+                    count++;
+
+
+            }
+            else
+            {
+                if (vote.Value == -1)
+                    count--;
+
+            }
+
+        }
+        /*
+        if (postive)
+        {
+            // if (myVote == 1)
+            count += postUp;
+            }
+        else
+        {
+            // if (myVote == -1)
+            count+=postDown;
+            }*/
+        
+        if (postive)
+        {
+            if (post.MyVote == 1)
+                count += post.MyVote;
+            }
+        else
+        {
+            if (post.MyVote == -1)
+                count += post.MyVote;
+            }
+
+    return count;
     }
 
+    async Task VoteData(int dir)
+    {
+
+        var updated = await Remedies.VoteAsync(post.Id, dir);
+        if (updated is not null) { post.Score = updated.Score; post.MyVote = updated.MyVote; }
+    }
     private async Task Vote(int direction)
     {
         // Undo the current vote first
-        if (myVote == 1) post.UpVoteNum--;
-        else if (myVote == -1) post.DownVoteNum--;
+        // if (myVote == 1) post.UpVoteNum--;
+        // else if (myVote == -1) post.DownVoteNum--;
 
         // Clicking the same arrow again removes the vote
-        myVote = myVote == direction ? 0 : direction;
+        // myVote = myVote == direction ? 0 : direction;
 
-        if (myVote == 1) post.UpVoteNum++;
-        else if (myVote == -1) post.DownVoteNum++;
+        // if (myVote == 1) post.UpVoteNum++;
+        // else if (myVote == -1) post.DownVoteNum++;
+        await VoteData(direction);
 
         await OnVoted.InvokeAsync(post);
     }
