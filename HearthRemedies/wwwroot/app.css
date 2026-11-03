@@ -6,7 +6,7 @@ a, .btn-link {
     color: #006bb7;
 }
 
-.btn-primary {
+/*.btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
@@ -14,7 +14,7 @@ a, .btn-link {
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+}*/
 
 .content {
     padding-top: 1.1rem;
@@ -100,3 +100,90 @@ h1:focus {
     }
 }
 
+/*new css*/
+
+/* Hearth Remedies buttons
+   Colors are eyeballed from the current UI. If your app.css already has
+   variables for these, delete this :root block and point to yours. */
+:root {
+    --hr-ink: #3a2418; /* dark brown: borders + text */
+    --hr-cream: #fffaf3; /* card / page background */
+    --hr-tan: #f0dfc6; /* tag chips */
+    --hr-tan-deep: #e6cfa9; /* hover on tan */
+    --hr-focus: #b5651d; /* focus ring */
+}
+
+/* Base: same pill shape + 2px brown outline as the vote buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px; /* large tap target */
+    padding: 0.5rem 1.5rem;
+    font: inherit;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--hr-ink);
+    background: var(--hr-cream);
+    border: 2px solid var(--hr-ink);
+    border-radius: 999px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+    .btn:hover {
+        background: var(--hr-tan);
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    .btn:focus-visible {
+        outline: 3px solid var(--hr-focus);
+        outline-offset: 3px;
+    }
+
+    .btn:disabled,
+    .btn[aria-disabled="true"] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+/* Primary: filled brown. Use for "New post" and "Create post" */
+.btn-primary {
+    color: var(--hr-cream);
+    background: var(--hr-ink);
+}
+
+    .btn-primary:hover {
+        color: var(--hr-cream);
+        background: #55372a;
+    }
+
+/* Secondary: outline only. Use for "Back to home" */
+.btn-secondary {
+    color: var(--hr-ink);
+    background: transparent;
+}
+
+/* Floating new-post button, bottom-right, within thumb reach */
+.btn-fab {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 10;
+    min-height: 56px;
+    padding: 0.5rem 1.75rem;
+    box-shadow: 0 3px 0 rgba(58, 36, 24, 0.35);
+}
+
+/* Full-width submit button for the create form */
+.btn-block {
+    display: flex;
+/*    width: 100%;*/
+}

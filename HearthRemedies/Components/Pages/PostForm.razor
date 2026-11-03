@@ -1,8 +1,11 @@
 ﻿@page "/newpost"
 @using RemedyLib.Data
 @inject RemedyService Remedies
+@inject NavigationManager Nav
 
-
+<button class="btn btn-secondary" @onclick="GoBack">
+    ← Back
+</button>
 <h3>Create your new post</h3>
 
 <EditForm Model="newPost" FormName="AddPostForm" OnValidSubmit="AddPost">
@@ -35,7 +38,7 @@
     <InputCheckbox id="Hidden" @bind-Value="newPost.IsHidden">
         <input type="checkbox" />
     </InputCheckbox>
-    <input type="submit" value="AppPost"/>
+    <input class="btn btn-primary btn-block" type="submit" value="Create post"/>
 </EditForm>
 
 @code {
@@ -47,5 +50,10 @@
         
         newPost = new Post();
         
+    }
+
+    private void GoBack()
+    {
+        Nav.NavigateTo("/");
     }
 }
