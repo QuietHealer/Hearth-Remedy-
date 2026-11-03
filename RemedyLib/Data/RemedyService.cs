@@ -140,16 +140,16 @@ public class RemedyService
             return "Please choose a category.";
         if (!Enum.IsDefined(input.UsageMethod))
             return "Please choose how the remedy is used.";
-        if (ContainsBlockedWord($"{title} {description} {ingredients} {steps}"))
-            return "Your post contains words that aren't allowed.";
+        //if (ContainsBlockedWord($"{title} {description} {ingredients} {steps}"))
+        //    return "Your post contains words that aren't allowed.";
 
         var deviceId = _device.GetDeviceId();
         await using var db = await _factory.CreateDbContextAsync();
 
-        var since = DateTime.UtcNow.AddHours(-1);
-        var recent = await db.Posts.CountAsync(p => p.AuthorDeviceId == deviceId && p.CreatedUtc > since);
-        if (recent >= MaxPostsPerHour)
-            return "You're posting too fast. Please try again later.";
+        //var since = DateTime.UtcNow.AddHours(-1);
+        //var recent = await db.Posts.CountAsync(p => p.AuthorDeviceId == deviceId && p.CreatedUtc > since);
+        //if (recent >= MaxPostsPerHour)
+        //    return "You're posting too fast. Please try again later.";
 
         db.Posts.Add(new Post
         {

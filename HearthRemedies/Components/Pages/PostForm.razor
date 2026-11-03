@@ -7,6 +7,20 @@
     ← Back
 </button>
 <h3>Create your new post</h3>
+@if (errorMessage != null)
+{
+    if (errorMessage == "good")
+    {
+        <p class="text-success">Post created successfully!</p>
+    }
+    else
+    {
+        <p class="text-danger">@errorMessage</p>
+    }
+
+}
+
+
 
 <EditForm Model="newPost" FormName="AddPostForm" OnValidSubmit="AddPost">
     <DataAnnotationsValidator />
@@ -16,7 +30,7 @@
     <InputText @bind-Value="newPost.Description" placeholder="Description"></InputText>
     <br />
     <InputTextArea @bind-Value="newPost.Ingredients" rows="4" placeholder="Ingredients (one per line)"></InputTextArea>
-    <br/>
+    <br />
     <InputTextArea @bind-Value="newPost.Steps" rows="5" placeholder="Steps (one per line)"></InputTextArea>
     <br />
     <InputSelect TValue="Category" placeholder="Remedy type" @bind-Value="newPost.Category">
@@ -38,18 +52,19 @@
     <InputCheckbox id="Hidden" @bind-Value="newPost.IsHidden">
         <input type="checkbox" />
     </InputCheckbox>
-    <input class="btn btn-primary btn-block" type="submit" value="Create post"/>
+    <input class="btn btn-primary btn-block" type="submit" value="Create post" />
 </EditForm>
 
 @code {
     private Post newPost { get; set; } = new Post();
-
-    private void AddPost()
+    string? errorMessage;
+    private async Task AddPost()
     {
-        Remedies.CreatePostAsync(newPost);
-        
+        //errorMessage = Remedies.CreatePostAsync(newPost).Result;
+        var result = await Remedies.CreatePostAsync(newPost);
+        errorMessage = (result == null) ? "good" : result;
         newPost = new Post();
-        
+
     }
 
     private void GoBack()
