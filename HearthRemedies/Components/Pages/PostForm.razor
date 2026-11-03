@@ -1,5 +1,7 @@
 ﻿@page "/newpost"
 @using RemedyLib.Data
+@inject RemedyService Remedies
+
 
 <h3>Create your new post</h3>
 
@@ -41,7 +43,8 @@
 
     private void AddPost()
     {
-        Home.posts.Add(newPost);
+        Remedies.CreatePostAsync(newPost);
+        
         newPost = new Post();
         
     }
