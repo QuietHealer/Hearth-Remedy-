@@ -134,7 +134,8 @@
         if (startingVote == value) count--;
         if (post.MyVote == value) count++;
 
-        return count;
+        return count*(postive ? 1 : -1);
+
     }
 
     async Task VoteData(int dir)
