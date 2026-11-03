@@ -1,8 +1,10 @@
 ﻿@using HearthRemedies.Model
 @using RemedyLib.Data
 @inject RemedyService Remedies
+@inject PostTransferService PostTransfer
+@inject NavigationManager Nav
 
-<article class="post-card">
+<article class="post-card" @onclick="GoToDetails">
     <div class="post-body">
         <section class="post-main">
             @* @if (!string.IsNullOrWhiteSpace(Post.ImgUrl))
@@ -146,4 +148,10 @@
         >= 1_000 => $"{n / 1_000d:0.#}k",
         _ => n.ToString()
     };
+
+    private void GoToDetails()
+    {
+        PostTransfer.CurrentPost = Post;
+        Nav.NavigateTo("/postpage");
+    }
 }

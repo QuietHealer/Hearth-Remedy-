@@ -1,6 +1,7 @@
 ﻿using RemedyLib.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using HearthRemedies.Model;
 using Microsoft.Extensions.Logging;
 using RemedyLib;
 namespace HearthRemedies
@@ -38,6 +39,7 @@ namespace HearthRemedies
     		builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<HearthRemedies.Controller.PostFilterState>();
+            builder.Services.AddScoped<PostTransferService>();
             var app = builder.Build();
             // Create the database on startup
             using (var scope = app.Services.CreateScope())
