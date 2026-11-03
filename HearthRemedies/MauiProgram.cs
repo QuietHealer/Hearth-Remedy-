@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HearthRemedies.Model;
+using Microsoft.Extensions.Logging;
 
 namespace HearthRemedies
 {
@@ -21,6 +22,7 @@ namespace HearthRemedies
     		builder.Logging.AddDebug();
 #endif
             builder.Services.AddSingleton<HearthRemedies.Controller.PostFilterState>();
+            builder.Services.AddScoped<PostTransferService>();
 
             return builder.Build();
         }

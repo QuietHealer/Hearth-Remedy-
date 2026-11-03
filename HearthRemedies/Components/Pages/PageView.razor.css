@@ -1,0 +1,17 @@
+.dropdown-section {
+    margin-bottom: 1rem;
+    padding: .75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fafafa;
+}
+
+.dropdown-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.dropdown-section[open] {
+    background: #f0f0f0;
+}

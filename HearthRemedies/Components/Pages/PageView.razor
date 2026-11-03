@@ -1,0 +1,138 @@
+﻿@page "/postpage"
+@inject PostTransferService PostTransfer
+@inject NavigationManager Nav
+
+<button class="back-btn" @onclick="GoBack">
+    ← Back
+</button>
+
+@if (post == null)
+{
+    <div class="alert alert-warning mt-4">
+        No post was provided.
+    </div>
+}
+else
+{
+    <div class="container mt-4">
+
+        <!-- Title + Category -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>@post.Name</h2>
+            <span class="badge bg-primary fs-6">@post.Category</span>
+            <span class="badge bg-primary fs-6">@post.UsageMethod</span>
+        </div>
+
+        <!-- Image -->
+        @if (!string.IsNullOrWhiteSpace(post.ImgUrl))
+        {
+            <img src="@post.ImgUrl" class="img-fluid rounded mb-3 shadow-sm" alt="@post.Name" />
+        }
+
+        <!-- Description -->
+        <details class="dropdown-section">
+            <summary class="dropdown-title">Description</summary>
+            <p>@post.Description</p>
+        </details>
+
+
+        <!-- Ingredients -->
+        <details class="dropdown-section">
+            <summary class="dropdown-title">Ingredients (@post.Ingredients.Count)</summary>
+            <ul>
+                @foreach (var ingredient in post.Ingredients)
+                {
+                    <li>@ingredient</li>
+                }
+            </ul>
+        </details>
+
+
+        <!-- Steps -->
+        <details class="dropdown-section">
+            <summary class="dropdown-title">Steps (@post.Steps.Count)</summary>
+            <ol>
+                @foreach (var step in post.Steps)
+                {
+                    <li>@step</li>
+                }
+            </ol>
+        </details>
+
+
+        
+
+        <!-- Metadata -->
+        <div class="text-muted mb-3">
+            <small>Created: @post.CreatedAt.ToString("MMMM dd, yyyy")</small><br />
+            @if (post.IsHidden)
+            {
+                <span class="badge bg-secondary">Hidden</span>
+            }
+            @if (post.ReportCount > 0)
+            {
+                <span class="badge bg-danger">Reports: @post.ReportCount</span>
+            }
+        </div>
+
+        <!-- Voting -->
+        <div class="d-flex gap-3 mb-4">
+            <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
+                ▲ @FormatCount(post.UpVoteNum)
+            </button>
+            <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
+                ▼ @FormatCount(post.DownVoteNum)
+            </button>
+
+            <!-- <button class="btn btn-warning" @onclick="Report">
+                ⚠️ Report
+            </button> -->
+        </div>
+
+    </div>
+}
+
+@code {
+    private Posts? post;
+
+    private int myVote;
+
+    [Parameter] public EventCallback<Posts> OnVoted { get; set; }
+
+    protected override void OnInitialized()
+    {
+        post = PostTransfer.CurrentPost;
+        myVote = 0;
+    }
+
+    private async Task Vote(int direction)
+    {
+        // Undo the current vote first
+        if (myVote == 1) post.UpVoteNum--;
+        else if (myVote == -1) post.DownVoteNum--;
+
+        // Clicking the same arrow again removes the vote
+        myVote = myVote == direction ? 0 : direction;
+
+        if (myVote == 1) post.UpVoteNum++;
+        else if (myVote == -1) post.DownVoteNum++;
+
+        await OnVoted.InvokeAsync(post);
+    }
+
+    private static string FormatCount(int n) => n switch
+    {
+        >= 1_000_000 => $"{n / 1_000_000d:0.#}m",
+        >= 1_000 => $"{n / 1_000d:0.#}k",
+        _ => n.ToString()
+    };
+
+    //void Report()
+    //{
+    //    post?.changeReport(1);
+    //}
+    private void GoBack()
+    {
+        Nav.NavigateTo("/");
+    }
+}

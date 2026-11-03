@@ -1,6 +1,8 @@
 ﻿@using HearthRemedies.Model
+@inject PostTransferService PostTransfer
+@inject NavigationManager Nav
 
-<article class="post-card">
+<article class="post-card" @onclick="GoToDetails">
     <div class="post-body">
         <section class="post-main">
             @if (!string.IsNullOrWhiteSpace(Post.ImgUrl))
@@ -32,10 +34,10 @@
     </div>
 
     <footer class="post-footer">
-        <button class="vote up @(myVote == 1 ? "active" : "")" @onclick="() => Vote(1)" aria-label="Upvote">
+        <button class="vote up @(myVote == 1 ? "active" : "")" @onclick:stopPropagation @onclick="() => Vote(1)" aria-label="Upvote">
             ▲ @FormatCount(Post.UpVoteNum)
         </button>
-        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick="() => Vote(-1)" aria-label="Downvote">
+        <button class="vote down @(myVote == -1 ? "active" : "")" @onclick:stopPropagation @onclick="() => Vote(-1)" aria-label="Downvote">
             ▼ @FormatCount(Post.DownVoteNum)
         </button>
         <time class="post-date">@Post.CreatedAt.ToString("MMM d")</time>
@@ -75,4 +77,10 @@
         >= 1_000 => $"{n / 1_000d:0.#}k",
         _ => n.ToString()
     };
+
+    private void GoToDetails()
+    {
+        PostTransfer.CurrentPost = Post;
+        Nav.NavigateTo("/postpage");
+    }
 }
