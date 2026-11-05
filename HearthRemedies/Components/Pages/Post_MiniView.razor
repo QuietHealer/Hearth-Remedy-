@@ -68,12 +68,9 @@
 
     protected override void OnInitialized()
     {
-        //Post = PostTransfer.CurrentPost;
         if (Post != null)
         {
             startingVote = Post.MyVote;
-            //ingredients = SplitIngredients(Post.Ingredients);
-            //steps = SplitLines(Post.Steps);
         }
     }
     async Task VoteData(int dir)
@@ -85,11 +82,10 @@
 
 
     // 1 = upvoted, -1 = downvoted, 0 = no vote
-    private int myVote;
-    private int postUp = 0;
-    private int postDown = 0;
-    private int startingVote;
+
     
+    private int startingVote;
+
     private int GetVotes(bool postive = true)
     {
         if (Post == null) return 0;
@@ -99,57 +95,11 @@
 
         if (startingVote == value) count--;
         if (Post.MyVote == value) count++;
-        
-        return count*(postive ? 1 : -1);
+
+        return count * (postive ? 1 : -1);
     }
-    /*
-    private int GetVotes(bool postive = true)
-    {
-        int count = 0;
-        foreach (Vote vote in Post.Votes)
-        {
-            if (postive)
-            {
-                if (vote.Value == 1)
-                    count++;
-
-
-            }
-            else
-            {
-                if (vote.Value == -1)
-                    count--;
-
-            }
-
-        }
-        
-        if (postive)
-        {
-            if (Post.MyVote == 1)
-                count += Post.MyVote;
-            }
-        else
-        {
-            if (Post.MyVote == -1)
-                count += Post.MyVote;
-            }
-
-    return count;
-    }
-*/
     private async Task Vote(int direction)
     {
-        // Undo the current vote first
-
-        // if (myVote == 1) postUp--;
-        // else if (myVote == -1) postDown--;
-
-        // Clicking the same arrow again removes the vote
-        // myVote = myVote == direction ? 0 : direction;
-
-        // if (myVote == 1) postDown++;
-        // else if (myVote == -1) postDown++;
 
         await VoteData(direction);
 
