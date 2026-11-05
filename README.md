@@ -241,8 +241,8 @@ Checked during testing:
 
 **Lessons learned**
 
-> Communication is key
-> Object responsibilities need to be clearly defined to prevent different interpretations of the same thing
+- Communication is key
+- Object responsibilities need to be clearly defined to prevent different interpretations of the same thing
 
 ## Competitive Landscape
 
