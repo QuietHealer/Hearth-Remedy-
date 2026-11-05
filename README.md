@@ -123,6 +123,8 @@ public static class Secrets
 
 This file is listed in `.gitignore`. **Never commit it.**
 
+> **Security note:** Keeping `Secrets.cs` out of Git only protects the password in the repository. The connection string is still compiled into the app, so anyone who gets a copy of the built app (for example, the APK) can decompile it and read the database password. This is acceptable for a class project with a throwaway database, but it is not safe for a production app. Use a low-privilege database account with a password you don't use anywhere else, and rotate it if the app is ever shared publicly. The proper fix is to put a small API between the app and the database so credentials stay on the server (see [Future Work](#future-work)).
+
 Using a hosted database service (such as Supabase, Neon, or Azure Database for PostgreSQL)? Copy the connection details from its dashboard. For local testing, a PostgreSQL install on your own machine works too, but a physical phone or emulator will only reach it if the host address is reachable from the device.
 
 ### 3. Restore and build
@@ -206,6 +208,7 @@ Checked during testing:
 - **No date-range filter in the UI.** The service supports "this week / this month / all time", but the app currently offers type, method, and sort controls only.
 - **No favorites, accounts, or comments.**
 - **The post creation screen is basic** and needs visual polish.
+- **Database credentials ship inside the app.** The connection string is compiled into the build and can be recovered by decompiling it (see the security note in [Setup Instructions](#setup-instructions)).
 - **Requires internet**, since all data lives in the remote database.
 - **Anonymous device IDs** reset if the app is reinstalled, so votes cast before a reinstall can't be matched to the same user.
 
