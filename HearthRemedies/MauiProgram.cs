@@ -22,17 +22,11 @@ namespace HearthRemedies
 
 
 
-            // Database file stored in the app's private data folder
-            //Old database code
-            //var dbPath = Path.Combine(FileSystem.AppDataDirectory, "hearth.db");
-            //builder.Services.AddDbContextFactory<AppDbContext>(options =>
-            //    options.UseSqlite($"Filename={dbPath}"));
-            //System.Diagnostics.Debug.WriteLine($"DB PATH: {dbPath}");
+            
             builder.Services.AddDbContextFactory<AppDbContext>(o => o.UseNpgsql(Secrets.ConnectionString));
             builder.Services.AddSingleton<IDeviceIdProvider, PreferencesDeviceIdProvider>();
             builder.Services.AddSingleton<RemedyService>();
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //    options.UseNpgsql(Secrets.ConnectionString));
+            
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
