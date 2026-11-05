@@ -241,7 +241,8 @@ Checked during testing:
 
 **Lessons learned**
 
-> Add your team's lessons here, for example: scope features to the time available, finish one feature end to end before starting the next, and test on a real device earlier.
+> Communication is key
+> Object responsibilities need to be clearly defined to prevent different interpretations of the same thing
 
 ## Competitive Landscape
 
