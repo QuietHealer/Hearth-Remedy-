@@ -1,16 +1,14 @@
 ﻿@inherits LayoutComponentBase
 @inject PostFilterState Filters
-
+@using RemedyLib.Data
 
 <div class="page">
-    
-
     <main>
         <div class="top-row px-4">
             <div class="filters">
                 <select @bind:get="Filters.Type" @bind:set="Filters.SetType" aria-label="Type">
                     <option value="">All types</option>
-                    @foreach (var type in Enum.GetValues<RemedyType>())
+                    @foreach (var type in Enum.GetValues<Category>())
                     {
                         <option value="@type">@type.GetDisplayName()</option>
                     }
@@ -18,7 +16,7 @@
 
                 <select @bind:get="Filters.Method" @bind:set="Filters.SetMethod" aria-label="Method">
                     <option value="">All methods</option>
-                    @foreach (var method in Enum.GetValues<RemedyMethod>())
+                    @foreach (var method in Enum.GetValues<UsageMethod>())
                     {
                         <option value="@method">@method.GetDisplayName()</option>
                     }
