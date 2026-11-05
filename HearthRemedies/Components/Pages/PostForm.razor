@@ -60,7 +60,6 @@
     string? errorMessage;
     private async Task AddPost()
     {
-        //errorMessage = Remedies.CreatePostAsync(newPost).Result;
         var result = await Remedies.CreatePostAsync(newPost);
         errorMessage = (result == null) ? "good" : result;
         newPost = new Post();
